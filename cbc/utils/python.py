@@ -26,18 +26,27 @@ class chdir(AbstractContextManager):  # noqa: N801
 
 
 # https://igeorgiev.eu/python/design-patterns/python-singleton-pattern-decorator/
+
 def singleton(orig_cls):
-    orig_new = orig_cls.__new__
-    instance = None
+    instances = {}
+    def getinstance(*args, **kwargs):
+        if orig_cls not in instances:
+            instances[orig_cls] = orig_cls(*args, **kwargs)
+        return instances[orig_cls]
+    return getinstance
 
-    @wraps(orig_cls.__new__)
-    def __new__(cls, *args, **kwargs):
-        nonlocal instance
-        if instance is None:
-            instance = orig_new(cls)
-            cls.__init__(instance, *args, **kwargs)
-        return instance
+# def singleton(orig_cls):
+#     orig_new = orig_cls.__new__
+#     instance = None
 
-    orig_cls.__new__ = __new__
+#     @wraps(orig_cls.__new__)
+#     def __new__(cls, *args, **kwargs):
+#         nonlocal instance
+#         if instance is None:
+#             instance = orig_new(cls)
+#             cls.__init__(instance, *args, **kwargs)
+#         return instance
 
-    return orig_cls
+#     orig_cls.__new__ = __new__
+
+#     return orig_cls

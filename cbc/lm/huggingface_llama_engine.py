@@ -73,7 +73,7 @@ class HuggingFaceLlamaLMEngine(LMEngine):
             do_sample=True,
             temperature=1.0,
             num_return_sequences=1,
-            top_k=1,
+            top_k=10,
             top_p=0.95,
         )
         outputs = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
@@ -84,7 +84,6 @@ class HuggingFaceLlamaLMEngine(LMEngine):
         split = prompt.strip()[-10:]
         _, _, output = outputs[0].partition(split)
         return output
-
 
 @singleton
 class Llama7B(HuggingFaceLlamaLMEngine):
